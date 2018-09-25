@@ -1,1 +1,21 @@
-﻿
+﻿Realizar pedido a un comercio adherido
+
+Como solicitante quiero realizar un pedido a un comercio adherido para recibir los productos en mi domicilio.
+
+Condiciones de Aceptación: 
+Se debe indicar la dirección (calle, numero ,ciudad y referencia opcional en formato de texto) La ciudad podrá ser seleccionada de un listado de ciudades disponibles.
+-La forma de pago será en efectivo.
+-Debe seleccionar opciones de entrega, “lo antes posible” o indicar fecha y rango horario de recepción. 
+-el carro debe contener al menos un producto.
+
+Pruebas de usuario:
+Realizar un pedido al comercio adherido con la opción lo antes posible, (Pasa).
+Realizar un pedido a comercio adherido con fecha de entrega posterior al pedido realizado (Pasa).
+Realizar un pedido a comercio adherido con fecha de entrega Anterior al pedido realizado (Falla).
+Realizar un pedido con monto efectivo a pagar valido (Pasa).
+Realizar un pedido sin completar el monto efectivo a pagar (Falla).
+
+Estimacion:
+Esfuerzo :
+Complejidad:
+Incertidumbre:
