@@ -1,0 +1,256 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Delivery LoQueSea</title>
+    <link rel="shortcut icon" href="images/favicon.ico">
+
+    <link href="/Content/bootstrap.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/site.css" rel="stylesheet" type="text/css" />
+
+    <script src="/scripts/jquery-1.9.1.js" type="text/javascript"></script>
+    <script src="/scripts/bootstrap.js" type="text/javascript"></script>
+    <script src="/scripts/angular.js" type="text/javascript"></script>
+    <script src="scripts/moment.min.js"></script>
+    <script src="scripts/locales.min.js"></script>
+    <script src="scripts/ui-bootstrap-tpls-2.5.0.min.js"></script>
+    <script src="scripts/DatePicker.js"></script>
+    <script src="scripts/app.js"></script>
+</head>
+<body ng-app='myApp' ng-controller='ArticulosCtrl'>
+
+
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <!--<a class="navbar-brand" href="#">
+                    <img class="img-responsive" src="/images/pymes1.jpg">
+                </a>-->
+            </div>
+            <div class="collapse navbar-collapse">
+                <ul class="nav navbar-nav">
+                    <li><a href="/inicio.html">Inicio</a></li>
+                    <li><a href="/articulos.html" title="angular con Mvc y WebApi">Pedido..</a></li>
+                    <li><a href="">Acerca de</a></li>
+                    <li><a href="">Contacto</a></li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href=""> Bienvenido: Grupo 4</a></li>
+                    <li><a href="">Cerrar Session</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="main container">
+        <h3>{{Titulo}} <small>{{TituloAccionABMC[AccionABMC]}}</small></h3>
+
+        <!-- Grilla de resutados de busqueda y Paginador-->
+        <div id="TablayPaginador" ng-show="AccionABMC == 'L' && Lista.length">
+            <table id="tbAbm" class="table table-bordered">
+                <tr>
+                    <th class="text-center">Nombre</th>
+                    <th class="text-center">Precio</th>
+                    <th class="text-center">Cantidad</th>
+                    <th class="text-center">Fecha de Alta</th>
+                    <th class="text-center">Activo</th>
+                    <th class="text-center" style="white-space:nowrap">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Acciones&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th> <!--tiene unos espacios especiales (alt+32) para que no divida la linea-->
+                </tr>
+                <tr ng-repeat="dto in Lista">
+                    <td>{{dto.Nombre | uppercase}}</td>
+                    <td>{{dto.Precio | currency:'$'}}</td>
+                    <td>{{dto.Stock| number}}</td>
+                    <td>{{dto.FechaAlta| date:'dd/MM/yyyy'}}</td>
+                    <td>{{dto.Activo ? 'SI' : 'NO'}}</td>
+                    <td class="text-center btn-group-xs">
+                        <button class="btn btn-primary" title="Ver" ng-click="Consultar(dto)">
+                            <span class="glyphicon glyphicon-search"></span>
+                        </button>
+                        <button class="btn btn-primary" title="Modificar"
+                                ng-click="Modificar(dto)">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </button>
+                        <button class="btn btn-{{ dto.Activo ? 'danger':'success'}}" title="{{dto.Activo  ? 'Desactivar':'Activar'}}"
+                                ng-click="ActivarDesactivar(dto)">
+                            <span class="glyphicon glyphicon-{{dto.Activo ? 'remove':'ok'}}"></span>
+                        </button>
+                    </td>
+                </tr>
+                <tr>
+                    <td> &nbsp;</td>
+                    <td> &nbsp;</td>
+                    <td> &nbsp;</td>
+                    <td> &nbsp;</td>
+                    <td> &nbsp;</td>
+                    <td> &nbsp;</td>
+                </tr>
+                <tr>
+                    <td>IMPORTE TOTAL&nbsp:</td>
+                    <td> &nbsp;</td>
+                    <td><strong>{{ElTotal| currency:'$'}}</strong></td>
+                </tr>
+            </table>
+        </div>
+
+        <!--No se encontraron registros-->
+        <div id="msjSD" " ng-show="AccionABMC == 'L' && Lista && Lista.length== 0" class="alert alert-info">
+            <span class="glyphicon glyphicon-exclamation-sign"></span>{{Mensajes['SD']}}<!-- texto: No se encontraron registros -->
+        </div>
+
+        <!-- Filtro de busqueda, se ve cuando la accion es Listado(busqueda/listado)-->
+        <form name="FormFiltro" ng-show="AccionABMC == 'L'" novalidate>
+           
+            <!-- Botones -->
+            <div class="row botones">
+                <!--<button class="btn btn-primary" ng-click="Buscar()"><span class="glyphicon glyphicon-search"> </span> Consultar</button>-->
+                <button class="btn btn-primary" ng-click="Agregar()"><span class="glyphicon glyphicon-plus"> </span> Comprar!</button>
+            </div>
+        </form>
+                     
+        <!-- Registro en Alta,Modificacion y Consulta -->
+        <form name="FormReg" ng-show="AccionABMC != 'L'" novalidate>
+
+
+            <!--Forma de pago-->
+            <div class="form-group row {{ (FormReg.FormaPago.$invalid) ? 'has-error' : '' }}">
+                <label class="control-label col-sm-2 col-sm-offset-2">Forma de pago <span class="text-danger">*</span></label>
+                <div class="col-xs-3">
+                    <select class="form-control" name="FormaPago" required ng-model="DtoFiltro.FormaPago">
+                        <!--Ex DtoFiltro.Activo-->
+                        <option value=''>Seleccionar..</option>
+                        <option value=Efectivo>Efectivo</option>
+                        <option value=Tarjeta>Tarjeta</option>
+                    </select>
+                    <span class="help-inline" ng-show="FormReg.FormaPago.$error.required && (FormReg.FormaPago.$touched || FormReg.$submitted)">Dato requerido.</span>
+                </div>
+            </div>
+
+
+            <!--campo Calle-->
+            <div class="form-group row">
+                <label class="control-label col-sm-2 col-sm-offset-2" for="Calle">Calle <span class="text-danger">*</span></label> <!--Calle Ex Nombre-->
+                <div class="col-sm-6">
+                    <input type="text" class="form-control " maxlength="45" name="Calle" required ng-model="DtoSel.Calle" ng-disabled="AccionABMC === 'C'" /> <!--Ex Nombre-->
+                    <span class="help-inline" ng-show="FormReg.Calle.$error.required && (FormReg.Calle.$touched || FormReg.$submitted)">Dato requerido.</span>
+                </div>
+            </div>
+
+            <!--campo Numero-->
+            <div class="form-group row {{ (FormReg.Numero.$invalid && (FormReg.Numero.$touched || FormReg.$submitted)) ? 'has-error' : '' }}">
+                <label class="control-label col-sm-2 col-sm-offset-2" for="Numero">Numero <span class="text-danger">*</span></label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control" name="Numero" required ng-model="DtoSel.Numero" maxlength="5" ng-pattern="/^[0-9]{1,5}$/" ng-disabled="AccionABMC === 'C'" /> <!--Numero Ex Precio-->
+                    <span class="help-inline" ng-show="FormReg.Calle.$error.required && FormReg.Numero.$error.pattern && (FormReg.Numero.$touched || FormReg.$submitted)">Dato Numerico de 1 a 5 Digitos.</span>
+                </div>
+            </div>
+
+            <!--campo Ciudad-->
+            <div class="form-group row {{ (FormReg.Ciudad.$invalid) ? 'has-error' : '' }}">
+                <label class="control-label col-sm-2 col-sm-offset-2">Ciudad <span class="text-danger">*</span></label>
+                <div class="col-sm-6">
+                    <!--agregar ng-model y luego utilizarlo en app de angular-->
+                    <select class="form-control" name="Ciudad" required ng-model="DtoFiltro.Ciudad">
+                        <option value=''>Seleccionar..</option>
+                        <option value=Cordoba>C&oacute;rdoba</option>
+                        <option value=Alta Gracia>Alta Gracia</option>
+                        <option value=Rio Ceballos>Rio Ceballos</option>
+                        <option value=Carlos Paz>Carlos Paz</option>
+                        <option value=Unquillo>Unquillo</option>
+                    </select>
+                    <span class="help-inline" ng-show="FormReg.Ciudad.$error.required && (FormReg.Ciudad.$touched || FormReg.$submitted)">Dato requerido.</span>
+                </div>
+            </div>
+
+            <!--campo Referencia-->
+            <div class="form-group row {{ (FormReg.Nombre.$invalid) ? 'has-error' : '' }}">
+                <label class="control-label col-sm-2 col-sm-offset-2" for="Stock">Referencia..</label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control " maxlength="190" name="Referencia" ng-model="DtoSel.Referencia" ng-disabled="AccionABMC === 'C'" /> <!--Referencia ex CodigoDeBarra-->
+                    <span class="help-inline" ng-show="FormReg.Referencia.$error.required && (FormReg.Referencia.$touched || FormReg.$submitted)"></span>
+                </div>
+            </div>
+
+            <!--Campo Su Pago-->
+            <div class="form-group row {{ (FormReg.SuPago.$invalid) ? 'has-error' : '' }}">
+                <label class="control-label col-sm-2 col-sm-offset-2" for="SuPago">Abonaré con.. <span class="text-danger">*</span></label>
+
+                <div class="col-sm-6">
+                     <!--Ddeclare el input como numero y coloco como valor minimo 7210 luego debo tunear mas esto con JS-->
+                    <input type="number" min="7210" class="form-control" name="SuPago" required ng-model="DtoSel.SuPago" maxlength="5" ng-pattern="/^[0-9]{1,6}$/" ng-disabled="AccionABMC === 'C'" />
+                    <!--Numero    Ex Precio   ng-pattern="/^[0-9]{16} el 16 significa que son 16 digitos de longitud-->
+                    <span class="help-inline" ng-show="FormReg.SuPago.$error.pattern && (FormReg.SuPago.$touched || FormReg.$submitted)">Dato Numerico de 1 a 6 Digitos.</span>
+                </div>
+            </div>
+
+            <!--campo Checkbox fechaEnvio-->
+            <br />
+            <div class="form-group row">
+                <label class="control-label col-sm-2 col-sm-offset-2" for="Ahora">Lo Antes Posible.. <span class="text-danger"></span></label>
+                <div class="col-sm-6">
+                    <input type="checkbox" name="AntesPosible" ng-model="DtoSel.ChNow" aria-label="Checkbox for following text input">
+
+                </div>
+            </div>
+            <br />
+            <!--Campo Fecha de Entrega-->
+            <div class="form-group row" ng-show="DtoSel.ChNow===false">
+                <label class="control-label col-sm-2 col-sm-offset-2">Fecha de Entrega </label>
+                <div class="col-sm-6">
+                    <input type="text"
+                           class="form-control"
+                           uib-datepicker-popup="{{format}}"
+                           ng-model="dt"
+                           is-open="popup1.opened"
+                           min-date="minDate"
+                           datepicker-options="dateOptions"
+                           ng-required="true"
+                           close-text="Close"
+                           alt-input-formats="altInputFormats"
+                           ng-change="changeHandler()"
+                           name="dt"
+                           ng-click="open1()" />
+
+                </div>
+            </div>
+
+            <!--campo Hora Entrega-->
+            <div class="form-group row" ng-show="DtoSel.ChNow===false">
+                <label class="control-label col-sm-2 col-sm-offset-2">Hora Aproximada.. </label>
+                <div class="col-sm-6">
+                    <input type="text" class="form-control " maxlength="5" ng-pattern="/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/" name="HoraEntrega" ng-model="DtoSel.HoraEntrega" ng-disabled="AccionABMC === 'C'" />
+                    <span class="help-inline" ng-show="FormReg.HoraEntrega.$error.pattern && (FormReg.HoraEntrega.$touched || FormReg.$submitted)">Dato Hora, formato HH:MM.</span>
+                </div>
+            </div>
+
+            <!-- Botones y alerta 'revisar datos'  Alerta que debiera indicar que la compra ha sido exitosa-->
+            <!--<span ng-if="DtoSel.SuPago>=7210   VERSION DE FAcundo
+        <div class="row botones">
+            <button class="btn btn-primary" ng-click="FormReg.$valid && Grabar()"><span class="glyphicon glyphicon-ok"></span> Confirmar Pedido </button>
+    </span> &nbsp;
+    <button class="btn btn-warning" ng-click="Volver()"> Volver/Cancelar </button>
+    </div>
+    <div class="row alert alert-danger" ng-show="FormReg.$invalid">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>{{Mensajes['RD']}}
+    </div>-->
+
+            <div class="row botones">
+                <button class="btn btn-primary" ng-click="FormReg.$valid && Grabar()"><span class="glyphicon glyphicon-ok"></span> Confirmar Pedido </button>
+
+                <button class="btn btn-warning" ng-click="Volver()"> Volver/Cancelar </button>
+            </div>
+            <div class="row alert alert-danger" ng-show="FormReg.$invalid">
+                <span class="glyphicon glyphicon-exclamation-sign"></span>{{Mensajes['RD']}}<!--texto: Revisar los datos ingresados...-->
+            </div>
+
+        </form>
+    </div>
+       
+</body>
+</html>

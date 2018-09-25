@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pago_Comercio", "PymesAng\Pago_Comercio.csproj", "{146DBF13-17DA-4B6D-8231-50BA28A46F34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Datos", "Datos\Datos.csproj", "{DF4B1593-3571-4922-9EE2-0D0CC1DC55AB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{146DBF13-17DA-4B6D-8231-50BA28A46F34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{146DBF13-17DA-4B6D-8231-50BA28A46F34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{146DBF13-17DA-4B6D-8231-50BA28A46F34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{146DBF13-17DA-4B6D-8231-50BA28A46F34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DF4B1593-3571-4922-9EE2-0D0CC1DC55AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF4B1593-3571-4922-9EE2-0D0CC1DC55AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF4B1593-3571-4922-9EE2-0D0CC1DC55AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF4B1593-3571-4922-9EE2-0D0CC1DC55AB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7CD0486A-73DE-4C2F-AAFF-11DF3DE77FEC}
+	EndGlobalSection
+EndGlobal
